@@ -1,0 +1,88 @@
+use database
+
+db.customers.insertMany([
+  {
+    "_id": 1,
+    "name": "Alice",
+    "email": "alice@example.com",
+    "age": 30,
+    "address": "123 Main St, City",
+    "phone": "123-456-7890"
+  },
+  {
+    "_id": 2,
+    "name": "Bob",
+    "email": "bob@example.com",
+    "age": 25,
+    "address": "456 Elm St, Town",
+    "phone": "987-654-3210"
+  },
+  
+])
+
+db.customers.insertMany([
+  {
+    "_id": 1,
+    "name": "Alice",
+    "email": "alice@example.com",
+    "age": 30,
+    "address": "123 Main St, City",
+    "phone": "123-456-7890"
+  },
+  {
+    "_id": 2,
+    "name": "Bob",
+    "email": "bob@example.com",
+    "age": 25,
+    "address": "456 Elm St, Town",
+    "phone": "987-654-3210"
+  },
+  
+])
+
+use ecommerce
+
+db.orders.insertMany([
+  {
+    "_id": 1,
+    "customer_id": 1,
+    "products": [
+      {"product_id": 1, "quantity": 2},
+      {"product_id": 2, "quantity": 1}
+    ],
+    "total": 3500,
+    "order_date": "2024-03-25"
+  },
+  {
+    "_id": 2,
+    "customer_id": 2,
+    "products": [
+      {"product_id": 1, "quantity": 1}
+    ],
+    "total": 1000,
+    "order_date": "2024-03-26"
+  },
+  
+])
+
+
+db.customers.find()
+db.products.find({ "price": { "$lt": 1500 } })
+db.orders.find({ "order_date": "2024-03-25" })
+db.orders.count()
+db.products.find().sort({ "price": -1 }).limit(1)
+db.orders.aggregate([
+  { "$group": { "_id": "$customer_id", "totalSpent": { "$sum": "$total" } } },
+  { "$sort": { "totalSpent": -1 } },
+  { "$limit": 1 }
+])
+db.products.aggregate([
+  { "$group": { "_id": null, "averagePrice": { "$avg": "$price" } } }
+])
+db.customers.find()
+db.orders.find({ "total": { "$gt": 2000 } })
+db.orders.find({ "customer_id": 1 }).forEach(function(order) {
+  order.products.forEach(function(product) {
+    print(db.products.findOne({ "_id": product.product_id }).name);
+  });
+})

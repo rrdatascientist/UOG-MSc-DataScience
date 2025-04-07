@@ -1,0 +1,63 @@
+MATCH (alice:Customer {name: 'Alice'})
+CREATE (iphone:Product {name: 'iPhone', price: 1000}),
+       (macbook:Product {name: 'MacBook', price: 1500}),
+       (purchase1:Purchase {date: date('2024-03-25'), total: 1000}),
+       (purchase2:Purchase {date: date('2024-03-26'), total: 1500}),
+       (review1:Review {content: 'Great phone, love it!', rating: 5}),
+       (review2:Review {content: 'Great laptop, but the screen resolution could be better.', rating: 4}),
+       (alice)-[:PURCHASED]->(purchase1),
+       (alice)-[:PURCHASED]->(purchase2),
+       (purchase1)-[:CONSISTS_OF]->(iphone),
+       (purchase2)-[:CONSISTS_OF]->(macbook),
+       (review1)-[:RELATED_TO]->(iphone),
+       (review2)-[:RELATED_TO]->(macbook)
+
+WITH alice, macbook
+
+MATCH (bob:Customer {name: 'Bob'})
+CREATE (bob)-[:PURCHASED]->(purchase3:Purchase {date: date('2024-03-27'), total: 2000}),
+       (purchase3)-[:CONSISTS_OF]->(iphone),
+       (review3:Review {content: 'Great phone, but the battery life could be better.', rating: 4}),
+       (review4:Review {content: 'Amazing laptop, highly recommended.', rating: 5}),
+       (review3)-[:RELATED_TO]->(iphone),
+       (review4)-[:RELATED_TO]->(macbook)
+
+WITH bob, macbook
+
+MATCH (charlie:Customer {name: 'Charlie'})
+CREATE (charlie)-[:PURCHASED]->(purchase4:Purchase {date: date('2024-03-28'), total: 1500}),
+       (purchase4)-[:CONSISTS_OF]->(macbook),
+       (review5:Review {content: 'Good laptop, sturdy build.', rating: 4}),
+       (review5)-[:RELATED_TO]->(macbook)
+
+MATCH (c:Customer)-[p:PURCHASED]->()
+RETURN c.name, count(p) AS totalPurchases
+
+MATCH (p:Product)<-[pur:PURCHASED]-()
+RETURN p.name, sum(pur.quantity * p.price) AS revenue
+
+MATCH (p:Product)<-[r:REVIEWED]-()
+WITH p, avg(r.rating) AS avgRating
+ORDER BY avgRating DESC
+RETURN p.name, avgRating
+
+MATCH (c:Customer)-[p:PURCHASED]->(pr:Product)
+WHERE p.quantity > 1
+RETURN c.name, pr.name, p.quantity
+
+MATCH (c:Customer)-[:PURCHASED]->(p:Product)
+WHERE NOT (c)-[:REVIEWED]->(p)
+RETURN c.name, p.name
+
+MATCH (p:Product)<-[r:REVIEWED]-()
+RETURN p.name, avg(r.rating) AS avgRating
+
+MATCH (p:Purchase)
+RETURN p.date, count(p) AS totalPurchases
+ORDER BY p.date
+
+MATCH (c:Customer)-[r:REVIEWED]->(p:Product)
+RETURN c.name, p.name, r.rating, r.review
+
+MATCH (c:Customer)-[r:REVIEWED]->(p:Product)
+RETURN c, r, p

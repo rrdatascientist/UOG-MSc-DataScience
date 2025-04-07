@@ -1,0 +1,12 @@
+[{
+  "_id": 1,
+  "name": "iPhone",
+  "price": 1000,
+  "description": "The latest iPhone model with advanced features."
+},
+{
+  "_id": 2,
+  "name": "MacBook",
+  "price": 1500,
+  "description": "Powerful laptop for professionals."
+}]

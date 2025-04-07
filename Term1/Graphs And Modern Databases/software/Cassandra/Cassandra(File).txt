@@ -1,0 +1,58 @@
+-- Create Keyspace (Database)
+CREATE KEYSPACE IF NOT EXISTS ecommerce
+WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+
+-- Use Keyspace (Switch to Database)
+USE ecommerce;
+
+-- Create Tables
+CREATE TABLE IF NOT EXISTS users (
+    user_id UUID PRIMARY KEY,
+    username TEXT,
+    email TEXT,
+    created_at TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS products (
+    product_id UUID PRIMARY KEY,
+    name TEXT,
+    description TEXT,
+    price DECIMAL,
+    stock INT
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+    order_id UUID PRIMARY KEY,
+    user_id UUID,
+    product_id UUID,
+    quantity INT,
+    order_date TIMESTAMP,
+    status TEXT
+);
+
+CREATE TABLE IF NOT EXISTS reviews (
+    review_id UUID PRIMARY KEY,
+    product_id UUID,
+    user_id UUID,
+    rating INT,
+    comment TEXT,
+    review_date TIMESTAMP
+);
+
+
+INSERT INTO users (user_id, username, email, created_at) VALUES (uuid(), 'john_doe', 'john@example.com', toTimestamp(now()));
+INSERT INTO products (product_id, name, price, stock) VALUES (uuid(), 'Laptop', 999.99, 100);
+INSERT INTO orders (order_id, user_id, product_id, quantity, order_date) VALUES (uuid(), <user_id>, <product_id>, 1, toTimestamp(now()));
+INSERT INTO reviews (review_id, product_id, user_id, rating, comment, review_date) VALUES (uuid(), <product_id>, <user_id>, 5, 'Great product!', toTimestamp(now()));
+
+SELECT * FROM users;
+SELECT * FROM products;
+SELECT * FROM orders;
+SELECT * FROM reviews;
+SELECT AVG(rating) AS average_rating FROM reviews WHERE product_id = <product_id>;
+SELECT COUNT(*) AS total_products FROM products;
+SELECT * FROM reviews WHERE product_id = <product_id>;
+SELECT * FROM orders WHERE user_id = <user_id>;
+SELECT * FROM reviews;
+SELECT AVG(rating) AS average_rating FROM reviews WHERE product_id = <product_id>;
+

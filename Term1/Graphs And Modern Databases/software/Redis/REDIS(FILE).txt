@@ -1,0 +1,96 @@
+Microsoft Windows [Version 10.0.19044.1586]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\admin>redis-cli
+127.0.0.1:6379> flushall
+127.0.0.1:6379> keys *
+(empty list or set)
+127.0.0.1:6379> hmset person_2 name john age 20 status single
+OK
+127.0.0.1:6379> person_2
+(error) ERR unknown command 'person_2'
+127.0.0.1:6379> hgetall person_2
+1) "name"
+2) "john"
+3) "age"
+4) "20"
+5) "status"
+6) "single"
+127.0.0.1:6379> hmset person_3 name kim age 19 status married
+OK
+127.0.0.1:6379> hmset person_5 name kim age 19 status married
+OK
+127.0.0.1:6379> hmset person_8 name kim age 19 status single
+OK
+127.0.0.1:6379> hmset person_2 name kim age 19 status divorced
+OK
+127.0.0.1:6379> hmset person_1 name jhon age 20 status married
+OK
+127.0.0.1:6379> hmset person_4 name sandy 25 status single
+(error) ERR wrong number of arguments for HMSET
+127.0.0.1:6379> hmset person_4 name hiya age 26 status married
+OK
+127.0.0.1:6379> hmset person_7 name sandy age 19 status divorced
+OK
+127.0.0.1:6379> hmset fam-6 name tom age 31 status married
+OK
+127.0.0.1:6379>
+127.0.0.1:6379> hmset person_10 name sam age 35 status single
+OK
+127.0.0.1:6379> hmset person_9 name lobo age 29 status married
+OK
+127.0.0.1:6379> keys *
+ 1) "person_8"
+ 2) "fam-6"
+ 3) "person_3"
+ 4) "person_2"
+ 5) "person_7"
+ 6) "person_5"
+ 7) "person_10"
+ 8) "person_9"
+ 9) "person_4"
+10) "person_1"
+127.0.0.1:6379> hexists person_3 surname
+(integer) 0
+127.0.0.1:6379> hexists person_1 name
+(integer) 1
+127.0.0.1:6379> hdel fam-6 status
+(integer) 1
+127.0.0.1:6379> hgetall person_1
+1) "name"
+2) "jhon"
+3) "age"
+4) "20"
+5) "status"
+6) "married"
+127.0.0.1:6379> hgetall person_2
+1) "name"
+2) "kim"
+3) "age"
+4) "19"
+5) "status"
+6) "divorced"
+127.0.0.1:6379> hgetall fam-6
+1) "name"
+2) "tom"
+3) "age"
+4) "31"
+127.0.0.1:6379> hgetall person_8
+1) "name"
+2) "kim"
+3) "age"
+4) "19"
+5) "status"
+6) "single"
+127.0.0.1:6379> hmget person_5 name status
+1) "kim"
+2) "married"
+127.0.0.1:6379> hmget fam-6 name age status
+1) "tom"
+2) "31"
+3) (nil)
+127.0.0.1:6379> hmget person_9 name age status
+1) "lobo"
+2) "29"
+3) "married"
+127.0.0.1:6379>
